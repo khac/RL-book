@@ -1,14 +1,13 @@
 from typing import Callable, Sequence, Tuple, List
 import numpy as np
-import random
 from scipy.stats import norm
 from rl.function_approx import DNNApprox, LinearFunctionApprox, \
     FunctionApprox, DNNSpec, AdamGradient, Weights
-from random import randrange
 from numpy.polynomial.laguerre import lagval
 from rl.chapter8.optimal_exercise_bin_tree import OptimalExerciseBinTree
 from rl.markov_process import NonTerminal
 from rl.gen_utils.plot_funcs import plot_list_of_curves
+import secrets
 
 TrainingDataType = Tuple[int, float, float]
 
@@ -198,7 +197,7 @@ def fitted_dql_put_option(
         vol=vol
     )
     for _ in range(training_iters):
-        t_ind, s, s1 = training_data[randrange(len(training_data))]
+        t_ind, s, s1 = training_data[secrets.SystemRandom().randrange(len(training_data))]
         t = t_ind * dt
         x_val: Tuple[float, float] = (t, s)
         val: float = max(strike - s1, 0)
@@ -327,7 +326,7 @@ if __name__ == '__main__':
     spot_price_frac_dql: float = 0.02
     training_iters_dql: int = 100000
 
-    random.seed(100)
+    secrets.SystemRandom().seed(100)
     np.random.seed(100)
 
     flspi: LinearFunctionApprox[Tuple[float, float]] = fitted_lspi_put_option(

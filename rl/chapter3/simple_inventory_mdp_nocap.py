@@ -3,12 +3,12 @@ from typing import Tuple, Iterator
 import itertools
 import numpy as np
 from scipy.stats import poisson
-import random
 
 from rl.markov_decision_process import MarkovDecisionProcess
 from rl.markov_process import MarkovRewardProcess, NonTerminal, State
 from rl.policy import Policy, DeterministicPolicy
 from rl.distribution import Constant, SampledDistribution
+import secrets
 
 
 @dataclass(frozen=True)
@@ -61,8 +61,7 @@ class SimpleInventoryMDPNoCap(MarkovDecisionProcess[InventoryState, int]):
             self.apply_policy(policy)
         count: int = 0
         high_fractile: int = int(poisson(self.poisson_lambda).ppf(0.98))
-        start: InventoryState = random.choice(
-            [InventoryState(i, 0) for i in range(high_fractile + 1)])
+        start: InventoryState = secrets.choice([InventoryState(i, 0) for i in range(high_fractile + 1)])
 
         for _ in range(num_traces):
             steps = itertools.islice(

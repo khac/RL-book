@@ -4,9 +4,9 @@ from abc import ABC, abstractmethod
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 import numpy as np
-import random
 from typing import (Callable, Dict, Generic, Iterator, Iterable,
                     Mapping, Optional, Sequence, Tuple, TypeVar)
+import secrets
 
 A = TypeVar('A')
 
@@ -99,7 +99,7 @@ class Uniform(SampledDistribution[float]):
     '''
     def __init__(self, expectation_samples: int = 10000):
         super().__init__(
-            sampler=lambda: random.uniform(0, 1),
+            sampler=lambda: secrets.SystemRandom().uniform(0, 1),
             expectation_samples=expectation_samples
         )
 
@@ -199,7 +199,7 @@ class FiniteDistribution(Distribution[A], ABC):
     def sample(self) -> A:
         outcomes = list(self.table().keys())
         weights = list(self.table().values())
-        return random.choices(outcomes, weights=weights)[0]
+        return secrets.SystemRandom().choices(outcomes, weights=weights)[0]
 
     # TODO: Can we get rid of f or make it optional? Right now, I
     # don't think that's possible with mypy.
@@ -249,7 +249,7 @@ class Bernoulli(FiniteDistribution[bool]):
     p: float
 
     def sample(self) -> bool:
-        return random.uniform(0, 1) <= self.p
+        return secrets.SystemRandom().uniform(0, 1) <= self.p
 
     def table(self) -> Mapping[bool, float]:
         return {True: self.p, False: 1 - self.p}
@@ -279,7 +279,7 @@ class Range(FiniteDistribution[int]):
         self.high = b
 
     def sample(self) -> int:
-        return random.randint(self.low, self.high - 1)
+        return secrets.SystemRandom().randint(self.low, self.high - 1)
 
     def table(self) -> Mapping[int, float]:
         length = self.high - self.low
@@ -298,7 +298,7 @@ class Choose(FiniteDistribution[A]):
         self.options = list(options)
 
     def sample(self) -> A:
-        return random.choice(self.options)
+        return secrets.choice(self.options)
 
     def table(self) -> Mapping[A, float]:
         if self._table is None:
