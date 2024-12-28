@@ -1,7 +1,6 @@
 import unittest
 
 import itertools
-import random
 from typing import cast, Iterable, Iterator, Optional, Tuple
 
 from rl.distribution import Categorical, Choose
@@ -13,6 +12,7 @@ from rl.markov_decision_process import FiniteMarkovDecisionProcess
 import rl.markov_decision_process as mdp
 import rl.td as td
 from rl.policy import FinitePolicy
+import secrets
 
 
 class FlipFlop(FiniteMarkovRewardProcess[bool]):
@@ -31,7 +31,7 @@ class FlipFlop(FiniteMarkovRewardProcess[bool]):
 
 class TestEvaluate(unittest.TestCase):
     def setUp(self):
-        random.seed(42)
+        secrets.SystemRandom().seed(42)
 
         self.finite_flip_flop = FlipFlop(0.7)
 
